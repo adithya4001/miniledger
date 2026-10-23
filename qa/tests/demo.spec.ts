@@ -60,7 +60,7 @@ test("MiniLedger working demo: login, receipt, overdue, repayment and persistenc
   await pause();
   await page.getByRole("button", { name: "Save entry →", exact: true }).click();
   await expect(page.getByText("Aarav", { exact: true })).toBeVisible();
-  await expect(page.getByText("OVERDUE", { exact: true })).toBeVisible();
+  await expect(page.getByText("OVERDUE", { exact: true })).toHaveCount(2);
   await expect(page.getByTestId("outstanding-balance")).toHaveText("₹1,250.50");
   await expect(page.getByTestId("total-overdue")).toHaveText("₹1,250.50");
   await page.screenshot({ path: "demo-artifacts/03-overdue.png" });
