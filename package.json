@@ -1,0 +1,17 @@
+{
+  "name": "miniledger",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "setup": "node tools/setup.mjs && npm install --prefix apps/api && npm install --prefix apps/mobile",
+    "dev:api": "npm run dev --prefix apps/api",
+    "dev:app": "npm run start --prefix apps/mobile",
+    "web": "npm run web --prefix apps/mobile",
+    "build": "npm run build --prefix apps/api && npm run export:web --prefix apps/mobile",
+    "typecheck": "npm run typecheck --prefix apps/api && npm run typecheck --prefix apps/mobile",
+    "test": "npm test --prefix apps/api"
+  },
+  "engines": {
+    "node": ">=22.13.0"
+  }
+}
