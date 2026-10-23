@@ -1,6 +1,6 @@
 # MiniLedger
 
-[GitHub repository](https://github.com/adithya4001/miniledger)
+[GitHub repository](https://github.com/adithya4001/miniledger) | [Working demo - 2 min 26 sec](https://drive.google.com/file/d/17wuET_MkXOlSXPUHkM7L-qTb63KNYjMv/view) | [Passed verification](https://github.com/adithya4001/miniledger/actions/runs/39901523256)
 
 A small React Native app for money lent to friends. Record an entry, attach a receipt, see what is overdue, and mark a full repayment. Phone login uses the assignment's mock OTP printed in the backend terminal; no SMS service or paid account is needed.
 
@@ -64,6 +64,8 @@ For PostgreSQL 16 / real HTTP integration tests, set `INTEGRATION_DATABASE_URL` 
 `npm run build` compiles the backend to `apps/api/dist` and exports the browser app to `apps/mobile/dist`. `export:native` builds the Android/iOS JavaScript and Hermes bundles into `dist-native`; it does not create an APK or install an app on a device.
 
 ## Working demo and CI
+
+The linked 2 minute 26 second recording was produced by the successful verification run at commit `30b70d12c5bb99db1953c45ab61f1da78e12fb4d`: 10 embedded tests, 10 PostgreSQL 16 integration tests, two browser scenarios, type checks, API/web builds and Android/iOS bundles passed. Native device installation was not tested.
 
 The included GitHub Actions workflow runs type checks, embedded tests, PostgreSQL 16 integration tests, browser/native builds, and real browser tests. It records a continuous approximately 2 minute 25 second phone-sized walkthrough of the React Native web app backed by the Node API and PostgreSQL service.
 
