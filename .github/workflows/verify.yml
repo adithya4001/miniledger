@@ -1,0 +1,80 @@
+name: Verify MiniLedger and record demo
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  verify:
+    runs-on: ubuntu-24.04
+    timeout-minutes: 20
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_USER: miniledger
+          POSTGRES_PASSWORD: ci_local_only
+          POSTGRES_DB: miniledger
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U miniledger -d miniledger"
+          --health-interval 3s
+          --health-timeout 3s
+          --health-retries 10
+    env:
+      DATABASE_URL: postgresql://miniledger:ci_local_only@localhost:5432/miniledger
+      AUTH_SECRET: ci-only-mock-authentication-secret-not-for-deployment
+      APP_ORIGINS: http://localhost:4173
+      BUSINESS_TIME_ZONE: Asia/Kolkata
+      EXPO_NO_TELEMETRY: 1
+      CI: 1
+    steps:
+      - uses: actions/checkout@v7.0.1
+      - uses: actions/setup-node@v7.1.0
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: |
+            apps/api/package-lock.json
+            apps/mobile/package-lock.json
+            qa/package-lock.json
+      - run: npm ci --prefix apps/api
+      - run: npm ci --prefix apps/mobile
+      - run: npm ci --prefix qa
+      - run: npm run typecheck
+      - name: Embedded PostgreSQL tests
+        run: npm test
+      - name: PostgreSQL 16 integration tests
+        run: npm test
+        env:
+          INTEGRATION_DATABASE_URL: postgresql://miniledger:ci_local_only@localhost:5432/miniledger
+      - run: npm run build
+      - name: Native bundles
+        run: npm run export:native --prefix apps/mobile
+      - name: Install Chromium
+        working-directory: qa
+        run: npx playwright install --with-deps chromium
+      - name: Start the app
+        run: |
+          npm run start --prefix apps/api > qa/api.log 2>&1 &
+          node qa/serve.mjs > qa/preview.log 2>&1 &
+          for attempt in $(seq 1 30); do
+            if curl --fail --silent http://localhost:4100/health && curl --fail --silent http://localhost:4173/ > /dev/null; then exit 0; fi
+            sleep 1
+          done
+          exit 1
+      - name: Record working app and verify browser flows
+        working-directory: qa
+        run: npx playwright test
+      - name: Upload demo and test evidence
+        if: always()
+        uses: actions/upload-artifact@v7.0.2
+        with:
+          name: miniledger-demo-and-checks
+          path: |
+            qa/test-results/
+            qa/playwright-report/
+            qa/demo-artifacts/
+          retention-days: 14
