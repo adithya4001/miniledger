@@ -1,0 +1,13 @@
+{
+  "expo": {
+    "name": "MiniLedger",
+    "slug": "miniledger",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "light",
+    "ios": {"supportsTablet": true, "bundleIdentifier": "com.adithya.miniledger"},
+    "android": {"package": "com.adithya.miniledger"},
+    "web": {"bundler": "metro", "name": "MiniLedger"},
+    "plugins": ["expo-secure-store", ["expo-image-picker", {"photosPermission": "Choose a receipt photo to attach to a loan entry.", "cameraPermission": false, "microphonePermission": false}]]
+  }
+}
