@@ -55,7 +55,7 @@ jobs:
         run: npm run export:native --prefix apps/mobile
       - name: Install Chromium
         working-directory: qa
-        run: npx playwright install --with-deps chromium
+        run: npx playwright install chromium
       - name: Start the app
         run: |
           npm run start --prefix apps/api > qa/api.log 2>&1 &
